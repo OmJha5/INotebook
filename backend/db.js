@@ -12,3 +12,5 @@ main().then((res) => {
 async function main(){
     return await mongoose.connect(MONGO_URL);
 }
+
+module.exports = main
