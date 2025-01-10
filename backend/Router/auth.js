@@ -5,7 +5,7 @@ let router = Router()
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-router.post("/" , [
+router.post("/signup" , [
     body("name" , "Name must be atleast 2 characters").isLength({min : 2}),
     body("email" , "Please enter a valid email").isEmail(),
     body("password" , "Password must be atleast 5 characters").isLength({min : 5}),
@@ -33,6 +33,38 @@ router.post("/" , [
         res.send(JWT_Token)
     } catch (err) {
         res.status(500).send(err); 
+    }
+
+})
+
+router.post("/login" , [
+    body("email" , "Please enter a valid email").isEmail(),
+    body("password" , "Password Must Not be Blank").exists(),
+
+]  , async (req , res) => {
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({"errors" : errors.array()})
+    }
+
+    try {
+        let {email , password} = req.body
+        let user = await User.findOne({email : email})
+        if(!user){
+            return res.status(400).send("Please enter valid credentials!")
+        }
+
+        let isPresent = await bcrypt.compare(password , user.password)
+        console.log(isPresent)
+        if(!isPresent){
+            return res.status(400).send("Please enter valid credentials!")
+        }
+
+        const JWT_Token = jwt.sign({ id: user._id }, 'shhhhh'); // payload pe kind of stamp lag chuka hai secret ka.
+
+        res.send(JWT_Token)
+    } catch (err) {
+        res.status(500).send("Internal server error"); 
     }
 
 })
