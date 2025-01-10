@@ -4,6 +4,7 @@ const { body, validationResult } = require('express-validator');
 let router = Router()
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const fetchuser = require("../middleware/fetchuser.js")
 
 router.post("/signup" , [
     body("name" , "Name must be atleast 2 characters").isLength({min : 2}),
@@ -55,7 +56,6 @@ router.post("/login" , [
         }
 
         let isPresent = await bcrypt.compare(password , user.password)
-        console.log(isPresent)
         if(!isPresent){
             return res.status(400).send("Please enter valid credentials!")
         }
@@ -67,6 +67,12 @@ router.post("/login" , [
         res.status(500).send("Internal server error"); 
     }
 
+})
+
+router.get("/fetchuser" , fetchuser , async(req , res) => {
+    let id = req.id;
+    let user = await User.findById(id).select("-password")
+    res.send(user)
 })
 
 module.exports = router;
