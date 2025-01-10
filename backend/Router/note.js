@@ -39,4 +39,30 @@ router.post("/addNote" , [
 
 })
 
+router.put("/updateNote/:id" , [
+    body("title" , "Title must be atleast 2 characters").isLength({min : 2}),
+    body("description" , "Description must be atleast 5 characters").isLength({min : 5}),
+
+] ,  fetchuser , async(req , res) => {
+
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        return res.status(400).json({"errors" : errors.array()})
+    }
+    
+    let newNote = {}
+    let {title , description , tag} = req.body
+    if(tag) newNote.tag = tag
+    newNote.title = title
+    newNote.description = description
+    let currNote = await Note.findById(req.params.id)
+
+    if(req.id.toString() != currNote.Owner.toString()){
+        res.status(400).send("Not Allowed to update")
+    }
+
+    let note = await Note.findByIdAndUpdate(req.params.id , { ...newNote } , {new : true})
+    res.send(note)
+})
+
 module.exports = router;
