@@ -50,19 +50,45 @@ router.put("/updateNote/:id" , [
         return res.status(400).json({"errors" : errors.array()})
     }
     
-    let newNote = {}
-    let {title , description , tag} = req.body
-    if(tag) newNote.tag = tag
-    newNote.title = title
-    newNote.description = description
-    let currNote = await Note.findById(req.params.id)
+    try{
+        let newNote = {}
+        let {title , description , tag} = req.body
+        if(tag) newNote.tag = tag
+        newNote.title = title
+        newNote.description = description
+        let currNote = await Note.findById(req.params.id)
+        if(!currNote) return res.send("Please enter valid Note")
 
-    if(req.id.toString() != currNote.Owner.toString()){
-        res.status(400).send("Not Allowed to update")
+        if(req.id.toString() != currNote.Owner.toString()){
+            res.status(400).send("Not Allowed to update")
+        }
+
+        let note = await Note.findByIdAndUpdate(req.params.id , { ...newNote } , {new : true})
+        res.send(note)
     }
+    catch (err) {
+        res.status(500).send("Internal server error"); 
+    }
+    
+})
 
-    let note = await Note.findByIdAndUpdate(req.params.id , { ...newNote } , {new : true})
-    res.send(note)
+
+router.delete("/deleteNote/:id" , fetchuser , async(req , res) => {
+
+    try{
+        let currNote = await Note.findById(req.params.id)
+        if(!currNote) return res.send("Please enter valid Note")
+
+        if(req.id.toString() != currNote.Owner.toString()){
+            res.status(400).send("Not Allowed to update")
+        }
+
+        await Note.findByIdAndDelete(req.params.id)
+        res.send("Successfully Deleted")
+    }
+    catch (err) {
+        res.status(500).send("Internal server error"); 
+    }
 })
 
 module.exports = router;
