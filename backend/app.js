@@ -1,7 +1,7 @@
 let express = require("express")
 let app = express()
 let authRouter = require("./Router/auth.js")
-let notesRouter = require("./Router/notes.js")
+let notesRouter = require("./Router/note.js")
 let main = require("./db.js")
 
 main()

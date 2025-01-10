@@ -20,8 +20,13 @@ let NotesSchema = new Schema({
     date : {
         type : String,
         default : Date.now
+    },
+
+    Owner : {
+        type : mongoose.Schema.ObjectId,
+        ref : "User"
     }
 })
 
-const Notes = mongoose.models.Notes || mongoose.model('Notes', NotesSchema); // Check if model is already compiled
-module.exports = Notes
+const Note = mongoose.models.Note || mongoose.model('Note', NotesSchema); // Check if model is already compiled
+module.exports = Note
