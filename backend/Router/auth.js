@@ -2,6 +2,8 @@ let Router = require('router')
 let User = require("../models/User.js")
 const { body, validationResult } = require('express-validator');
 let router = Router()
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 router.post("/" , [
     body("name" , "Name must be atleast 2 characters").isLength({min : 2}),
@@ -15,13 +17,20 @@ router.post("/" , [
     }
 
     try {
+
+        const salt = bcrypt.genSaltSync(10);
+        const secPassword = bcrypt.hashSync(req.body.password, salt);
+
         let newUser = new User({
             name: req.body.name,
             email: req.body.email,
-            password: req.body.password
+            password: secPassword
         });
-        let result = await newUser.save(); 
-        res.send("User is created...");
+        await newUser.save(); 
+
+        const JWT_Token = jwt.sign({ id: newUser._id }, 'shhhhh');
+
+        res.send(JWT_Token)
     } catch (err) {
         res.status(500).send(err); 
     }
