@@ -40,7 +40,7 @@ export default function AddNote() {
                 <textarea className="form-control" id="description" name='description' rows="5" onChange={onChange}></textarea>
             </div>
 
-            <button type="button" class="btn btn-primary" onClick={onClick}>Primary</button>
+            <button type="button" class="btn btn-primary" onClick={onClick}>Add Note</button>
             
         </form>
 
