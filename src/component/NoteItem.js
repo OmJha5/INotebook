@@ -11,7 +11,6 @@ export default function NoteItem(props) {
                 <h6 className='card-text'><b>Tag :</b>{note.tag}</h6>
 
                 <p className="card-text">{note.description}</p>
-                
             </div>
         </div>
     </div>

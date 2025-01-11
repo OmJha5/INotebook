@@ -3,7 +3,7 @@ import NoteContext from '../Context/Note/NoteContext'
 import NoteItem from "./NoteItem.js"
 
 export default function Note() {
-    let {notes , setNote} = useContext(NoteContext)
+    let {notes} = useContext(NoteContext)
 
   return (
     <div style={{margin : "2rem 0px" , padding : "2rem"}}>

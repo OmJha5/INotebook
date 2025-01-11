@@ -32,8 +32,12 @@ const NoteState = (props) => {
 
     let [notes , setNotes] = useState(initialData)
 
+    let addNote = (note) => {
+        setNotes(notes.concat(note))
+    }
+
     return (
-        <NoteContext.Provider value={{notes , setNotes}}>
+        <NoteContext.Provider value={{notes , addNote}}>
             {props.children}
         </NoteContext.Provider>
     )
